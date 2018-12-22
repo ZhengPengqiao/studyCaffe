@@ -1,0 +1,18 @@
+# The train/test net protocol buffer definition
+# 用于训练/预测的网络描述文件（ProtoBuffer文件格式）
+net: "examples/O101/googlenet_train_test.prototxt"
+test_iter: 1000
+test_interval: 4000
+test_initialization: false
+display: 40
+average_loss: 40
+base_lr: 0.01
+lr_policy: "step"
+stepsize: 1000
+gamma: 0.96
+max_iter: 10000
+momentum: 0.9
+weight_decay: 0.05
+snapshot: 5000
+snapshot_prefix: "examples/O101/googlenet"
+solver_mode: CPU
