@@ -40,4 +40,4 @@ snapshot_prefix: "examples/mnist/lenet"
 
 # solver mode: CPU or GPU
 # Caffe求解模型为CPU模式。有条件可以改为GPU
-solver_mode: CPU
+solver_mode: GPU
