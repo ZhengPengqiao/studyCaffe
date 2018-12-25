@@ -1,0 +1,129 @@
+name: "LeNet"
+layer {
+  name: "data"
+  type: "Input"
+  top: "data"
+  input_param { shape: { dim: 100 dim: 3 dim: 28 dim: 28 } }
+}
+layer {					        #定义一个新的卷积层conv1,输入blob为data,输出blob为conv1
+  name: "conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "conv1"
+  param {
+    lr_mult: 1			    #权值学习速率倍乘因子，1倍表示保持与全局参数一致
+  }
+  param {
+    lr_mult: 2			    #bias学习速率倍乘因子，是全局参数的2倍
+  }
+  convolution_param {	  #卷积计算参数
+    num_output: 20		  #输出feature map数目为20
+    kernel_size: 5		  #卷积核尺寸， 5x5
+    stride: 1			      #卷积输出跳跃间隔，1表示连续输出，无跳跃
+    weight_filler {		  #权值使用xavier填充器
+      type: "xavier"
+    }
+    bias_filler {		    #bais使用常数填充器，默认为0
+      type: "constant"
+    }
+  }
+}
+layer {					        #定义新的下采样层pool1,输入blob为conv1,输出为blob为pool1
+  name: "pool1"
+  type: "Pooling"
+  bottom: "conv1"
+  top: "pool1"
+  pooling_param {		    #下采样参数
+    pool: MAX		      	#使用最大下采样方法
+    kernel_size: 2		  #下采样窗口尺寸2x2
+    stride: 2			      #下采样输出跳跃间隔2x2
+  }
+}
+layer {					        #新的卷积层，和conv1类似
+  name: "conv2"
+  type: "Convolution"
+  bottom: "pool1"
+  top: "conv2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  convolution_param {
+    num_output: 50
+    kernel_size: 5
+    stride: 1
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {					        #新的下采样层，和pool1类似
+  name: "pool2"
+  type: "Pooling"
+  bottom: "conv2"
+  top: "pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 2
+  }
+}
+layer {				        	#新的全连接层，输入blob为pool2,输出blob为ip1
+  name: "ip1"
+  type: "InnerProduct"
+  bottom: "pool2"
+  top: "ip1"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {	 #全连接层采参数
+    num_output: 500		   #该层输出元素个数为500
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {					          #新的非线性层，用ReLU方法
+  name: "relu1"
+  type: "ReLU"
+  bottom: "ip1"
+  top: "ip1"
+}
+layer {
+  name: "ip2"
+  type: "InnerProduct"
+  bottom: "ip1"
+  top: "ip2"
+  param {
+    lr_mult: 1
+  }
+  param {
+    lr_mult: 2
+  }
+  inner_product_param {
+    num_output: 40
+    weight_filler {
+      type: "xavier"
+    }
+    bias_filler {
+      type: "constant"
+    }
+  }
+}
+layer {
+  name: "prob"
+  type: "Softmax"
+  bottom: "ip2"
+  top: "prob"
+}
